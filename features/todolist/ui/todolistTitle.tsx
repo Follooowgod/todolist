@@ -4,10 +4,10 @@ import {
   useRemoveTodolistMutation,
   useUpdateTodolistTitleMutation
 } from "@/features/todolist/api/todolistApi";
-import {useAppDispatch} from "@/components/common/hooks/useAppDispatch";
 import {EditableSpan} from "@/components/shared";
 import {Button} from "@/components/ui/button";
 import {BadgeX} from "lucide-react";
+import {useAppDispatch} from "@/lib/hooks";
 
 type Props = {
   todolist: DomainTodolist
@@ -46,11 +46,11 @@ export const TodolistTitle = ({ todolist }: Props) => {
   }
 
   return (
-    <div>
-      <h3>
+    <div className="flex justify-between items-center mb-2">
+      <h3 className='text-xl font-bold'>
         <EditableSpan value={title} onChange={changeTodolistTitle}/>
       </h3>
-      <Button onClick={deleteTodolist} disabled={entityStatus === "loading"}>
+      <Button variant={'ghost'} onClick={deleteTodolist} disabled={entityStatus === "loading"}>
         <BadgeX size={16}/>
       </Button>
     </div>

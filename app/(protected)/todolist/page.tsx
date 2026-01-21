@@ -1,6 +1,3 @@
-import {Todolist} from "@/features/todolist/ui/todolist";
-
-
-export default function TodolistPage() {
-  return <Todolist/>
-}
+"use client";
+import { Todolist } from "@/features/todolist/ui/todolist";
+export default function TodolistPage() { return <Todolist />; }

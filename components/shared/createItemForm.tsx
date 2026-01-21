@@ -7,10 +7,11 @@ import {BadgePlus} from "lucide-react";
 type Props = {
   onCreateItem: (title: string) => void
   disabled?: boolean
+  placeholder?: string
 }
 
 
-export const CreateItemForm = ({onCreateItem, disabled}: Props) => {
+export const CreateItemForm = ({onCreateItem, disabled, placeholder}: Props) => {
 
   const [title, setTitle] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -43,11 +44,11 @@ export const CreateItemForm = ({onCreateItem, disabled}: Props) => {
       value={title}
       onChange={changeTitleHandler}
       onKeyDown={createItemOnEnterHandler}
-      placeholder="Add new task"
-      className="border border-gray-300 rounded-md p-2 w-full" />
+      placeholder={placeholder ?? "Add new task..."}
+      className="border border-gray-300 rounded-md p-2 " />
     {error && <p className="text-red-500">{error}</p>}
-    <Button variant='ghost' onClick={createItemHandler} disabled={disabled}>
-      <BadgePlus/>
+    <Button variant='ghost' onClick={createItemHandler} disabled={disabled} className='w-15 h-12'>
+      <BadgePlus size={20}/>
     </Button>
   </div>
   )

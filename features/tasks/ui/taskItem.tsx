@@ -1,11 +1,10 @@
 import {DomainTodolist} from "@/components/common/types";
 import {DomainTask, UpdateTaskModel} from "@/features/tasks/api/taskApi.types";
 import {
-  useRemoveTaskMutation, useReorderTaskMutation,
+  useRemoveTaskMutation,
   useUpdateTaskMutation
 } from "@/features/tasks/api/taskApi";
 import {TaskStatus} from "@/components/common/enums";
-import {getPutAfterItemId} from "@/lib/dnd/reorder";
 import {createTaskModel} from "@/features/tasks/lib/createTaskModel";
 import {Checkbox} from "@/components/ui/checkbox";
 import {EditableSpan} from "@/components/shared/editableSpan";
@@ -22,7 +21,6 @@ type Props = {
 export const TaskItem = ({task, todolist}: Props) => {
   const [removeTask] = useRemoveTaskMutation()
   const [updateTask] = useUpdateTaskMutation()
-  const [reorderTask] = useReorderTaskMutation()
 
   const deleteTaskHandler = () => {
     removeTask({todolistId: todolist.id, taskId: task.id})
@@ -31,16 +29,6 @@ export const TaskItem = ({task, todolist}: Props) => {
   const updateTaskHandler = (arg: Partial<UpdateTaskModel>) => {
     const model = createTaskModel(task, arg)
     updateTask({todolistId: todolist.id, taskId: task.id, model})
-  }
-
-  const reorderTaskHandler = async (arg: {
-    todolistId: string;
-    taskId: string;
-    newPosition: string[]
-  }) => {
-    const {todolistId, taskId, newPosition} = arg
-    const putAfterItemId = getPutAfterItemId(newPosition, taskId)
-    await reorderTask({todolistId, taskId, putAfterItemId})
   }
 
   const changeTaskStatus = (checked: boolean | 'indeterminate') => {
@@ -58,15 +46,17 @@ export const TaskItem = ({task, todolist}: Props) => {
 
   const isTaskCompleted = task.status === TaskStatus.Completed
 
+
+
   return (
-    <div>
-      <div>
+      <div className='flex justify-between items-center gap-2'>
+        <div className='flex items-center gap-4'>
         <Checkbox checked={isTaskCompleted} onCheckedChange={changeTaskStatus} />
         <EditableSpan value={task.title} onChange={changeTaskTitle} />
-        <Button onClick={deleteTaskHandler}>
+        </div>
+        <Button variant={'ghost'} onClick={deleteTaskHandler}>
           <BadgeX size={16}/>
         </Button>
       </div>
-    </div>
   )
 }

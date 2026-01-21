@@ -9,9 +9,32 @@ import {BaseResponse} from "@/components/common/types";
 
 export const tasksApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getTasks: build.query<GetTasksResponse, string>({
-      query: (todolistId) => `todo-lists/${todolistId}/tasks`,
-      providesTags: (_result, _error, todolistId) => [{ type: "Task", id: todolistId }],
+    getTasks: build.query<GetTasksResponse, { todolistId: string; count?: number; page?: number }>({
+      query: ({todolistId, count = 7, page = 1}) => ({
+        url: `todo-lists/${todolistId}/tasks`,
+        params: {count, page}
+    }),
+      serializeQueryArgs: ({endpointName, queryArgs}) => `${endpointName}-${queryArgs.todolistId}`,
+
+      merge: (currentCache, newData, {arg}) => {
+        const page = arg.page ?? 1
+
+        if(page === 1) {
+          currentCache.items = newData.items
+          currentCache.totalCount = newData.totalCount
+          return
+        }
+
+        const existing = new Set(currentCache.items.map(t=> t.id))
+        for(const t of newData.items) {
+          if(!existing.has(t.id)) currentCache.items.push(t)
+        }
+        currentCache.totalCount = newData.totalCount
+      },
+
+      forceRefetch: ({currentArg, previousArg}) => (currentArg?.page ?? 1) !== (previousArg?.page ?? 1),
+
+      providesTags: (_result, _error, {todolistId}) => [{ type: "Task", id: todolistId }],
     }),
 
     addTask: build.mutation<

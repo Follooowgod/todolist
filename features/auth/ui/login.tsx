@@ -24,8 +24,20 @@ import {
 import {Input} from "@/components/ui/input";
 import {Checkbox} from "@/components/ui/checkbox";
 import {Button} from "@/components/ui/button";
+import {useRouter} from "next/navigation";
+import {selectIsLoggedIn} from "@/app/app-slice";
+import {useEffect} from "react";
+import {useAppSelector} from "@/lib/hooks";
 
 export const Login = () => {
+
+  const router = useRouter();
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+
+  useEffect(() => {
+    if (isLoggedIn) router.replace("/todolist");
+  }, [isLoggedIn, router]);
+
   const [login, { isLoading }] = useLoginMutation();
   const [getCaptchaUrl, { data: captchaRes }] = useLazyGetCaptchaUrlQuery();
 
@@ -147,28 +159,28 @@ export const Login = () => {
             >
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
+            {captchaUrl && (
+              <div className="space-y-2">
+                <img src={captchaUrl} alt="captcha" className="rounded-md border" />
+
+                <FormField
+                  control={form.control}
+                  name="captcha"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Captcha</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter symbols" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
           </form>
         </Form>
       </CardContent>
-      {captchaUrl && (
-        <div className="space-y-2">
-          <img src={captchaUrl} alt="captcha" className="rounded-md border" />
-
-          <FormField
-            control={form.control}
-            name="captcha"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Captcha</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter symbols" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      )}
     </Card>
   );
 };

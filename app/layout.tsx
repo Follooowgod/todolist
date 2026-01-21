@@ -1,10 +1,10 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
-import {Header} from "@/components/layout/header";
-import { ThemeProvider } from "./../components/providers";
+import { ThemeProvider } from "./providers";
 import {Toaster} from "@/components/ui/sonner";
-import {Providers} from "@/components/providers/reduxProvier";
+import {Providers} from "@/app/providers/reduxProvier";
+import {DndProvider} from "@/lib/dnd/dndProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,11 +35,12 @@ export default function RootLayout({
     <body className={`${geistSans.variable} ${geistMono.variable} ${geistTinos.variable} antialiased`}>
     <Providers>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <DndProvider>
       <main className="min-h-screen">
-        <Header />
         {children}
         <Toaster richColors/>
       </main>
+        </DndProvider>
     </ThemeProvider>
     </Providers>
     </body>

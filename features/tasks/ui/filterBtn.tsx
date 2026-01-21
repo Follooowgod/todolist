@@ -1,7 +1,7 @@
 import {DomainTodolist, FilterValues} from "@/components/common/types";
-import {useAppDispatch} from "@/components/common/hooks/useAppDispatch";
 import {todolistsApi} from "@/features/todolist/api/todolistApi";
 import {Button} from "@/components/ui/button";
+import {useAppDispatch} from "@/lib/hooks";
 
 
 type Props = {
@@ -12,7 +12,7 @@ export const FilterBtn = ({todolist}: Props) => {
 
   const {id, filter} = todolist
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const changeFilter = (filter: FilterValues) => {
     dispatch(

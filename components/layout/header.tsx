@@ -4,9 +4,8 @@ import {Container} from "@/components/shared";
 import Image from "next/image";
 import {ThemeSwitch} from "@/components/common";
 import {LogInBtn, LogOutBtn} from "@/components/common/logIn";
-import {useLoginMutation} from "@/features/auth/api/authApi";
 import {selectIsLoggedIn} from "@/app/app-slice";
-import {useAppSelector} from "@/components/common/hooks/useAppSelectors";
+import {useAppSelector} from "@/lib/hooks";
 
 interface Props {
   className?: string

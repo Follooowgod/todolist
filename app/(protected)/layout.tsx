@@ -4,7 +4,9 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { selectIsLoggedIn } from "@/app/app-slice";
 import {Header} from "@/components/layout";
-import {useAppSelector} from "@/components/common/hooks/useAppSelectors";
+import {tokenStorage} from "@/lib/auth/tokenStorage";
+import {useMeQuery} from "@/features/auth/api/authApi";
+import {useAppSelector} from "@/lib/hooks";
 
 export default function ProtectedLayout({
                                           children,
@@ -13,19 +15,25 @@ export default function ProtectedLayout({
 }) {
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const router = useRouter();
+  const token = tokenStorage.get()
+
+  const {isLoading, isFetching} = useMeQuery(undefined, {skip: !token})
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      router.replace("/login");
+    if (!token) {
+      router.replace("/login")
+      return
     }
-  }, [isLoggedIn, router])
 
-  if (!isLoggedIn) return null
+    if (!isLoggedIn && !isLoading && !isFetching) {
+      router.replace("/login")
+    }
+  }, [token, isLoggedIn, isLoading, isFetching, router])
 
   return (
     <>
       <Header />
       <main className="p-4">{children}</main>
-    </>
+      </>
   );
 }
